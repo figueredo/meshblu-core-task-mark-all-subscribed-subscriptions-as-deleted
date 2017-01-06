@@ -16,8 +16,10 @@ class MarkAllSubscribedSubscriptionsAsDeleted
   do: (request, callback) =>
     {toUuid} = request.metadata
 
-    @subscriptionManager.markAllAsDeleted emitterUuid: toUuid, (error) =>
+    @subscriptionManager.markAllAsDeleted subscriberUuid: toUuid, (error) =>
       return @_doCallback request, error.code || 500, callback if error
-      return @_doCallback request, 204, callback
+      @subscriptionManager.markAllAsDeleted emitterUuid: toUuid, (error) =>
+        return @_doCallback request, error.code || 500, callback if error
+        return @_doCallback request, 204, callback
 
 module.exports = MarkAllSubscribedSubscriptionsAsDeleted

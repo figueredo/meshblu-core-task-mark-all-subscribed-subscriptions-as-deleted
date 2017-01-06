@@ -27,6 +27,10 @@ describe 'RemoveSubscription', ->
         @datastore.insert subscription, done
 
       beforeEach (done) ->
+        subscription = {subscriberUuid:'spiderman', emitterUuid: 'bonzo', type:'broadcast'}
+        @datastore.insert subscription, done
+
+      beforeEach (done) ->
         request =
           metadata:
             responseId: 'its-electric'
@@ -34,10 +38,22 @@ describe 'RemoveSubscription', ->
 
         @sut.do request, (error, @response) => done error
 
-      it 'should mark the subscription as deleted', (done) ->
+      it 'should mark the emitterUuid subscription as deleted', (done) ->
         query =
           subscriberUuid: 'superman'
           emitterUuid: 'spiderman'
+          type: 'broadcast'
+
+        @datastore.find query, (error, subscriptions) =>
+          return done error if error?
+          expect(subscriptions).to.have.lengthOf 1
+          expect(subscriptions[0]).to.have.property 'deleted', true
+          done()
+
+      it 'should mark the subscriberUuid subscription as deleted', (done) ->
+        query =
+          subscriberUuid: 'spiderman'
+          emitterUuid: 'bonzo'
           type: 'broadcast'
 
         @datastore.find query, (error, subscriptions) =>

@@ -1,6 +1,6 @@
 {
   "name": "meshblu-core-task-mark-all-subscribed-subscriptions-as-deleted",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Meshblu core task meshblu-core-task-meshblu-core-mark-all-subscribed-subscriptions-as-deleted",
   "keywords": [
     "meshblu",
@@ -25,7 +25,7 @@
   "dependencies": {
     "coffee-script": "^1.10.0",
     "lodash": "^4.6.1",
-    "meshblu-core-manager-subscription": "^3.5.0"
+    "meshblu-core-manager-subscription": "^5.1.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",
