@@ -1,8 +1,9 @@
-_    = require 'lodash'
 http = require 'http'
+SubscriptionManager = require 'meshblu-core-manager-subscription'
 
-class MeshbluCoreMarkAllSubscribedSubscriptionsAsDeleted
-  constructor: (options={}) ->
+class MarkAllSubscribedSubscriptionsAsDeleted
+  constructor: ({@datastore,@uuidAliasResolver}) ->
+    @subscriptionManager = new SubscriptionManager {@datastore, @uuidAliasResolver}
 
   _doCallback: (request, code, callback) =>
     response =
@@ -13,9 +14,10 @@ class MeshbluCoreMarkAllSubscribedSubscriptionsAsDeleted
     callback null, response
 
   do: (request, callback) =>
-    {uuid, messageType, options} = request.metadata
-    message = JSON.parse request.rawData
+    {toUuid} = request.metadata
 
-    return @_doCallback request, 204, callback
+    @subscriptionManager.markAllAsDeleted emitterUuid: toUuid, (error) =>
+      return @_doCallback request, error.code || 500, callback if error
+      return @_doCallback request, 204, callback
 
-module.exports = MeshbluCoreMarkAllSubscribedSubscriptionsAsDeleted
+module.exports = MarkAllSubscribedSubscriptionsAsDeleted
